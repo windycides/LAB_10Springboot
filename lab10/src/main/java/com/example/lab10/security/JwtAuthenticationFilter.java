@@ -33,13 +33,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        // 1. Check if the request has a "Bearer " token
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             try { username = jwtUtil.extractUsername(jwt); } catch (Exception e) {}
         }
 
-        // 2. If token is valid, set the user as "Authenticated"
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.loadUserByUsername(username);
             if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {

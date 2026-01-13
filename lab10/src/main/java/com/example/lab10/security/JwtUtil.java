@@ -9,7 +9,6 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    // This key must be super secure and at least 32 characters long
     private static final String SECRET_KEY = "MySuperSecretKeyForLab11MustBeVeryLongAndSecure";
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
@@ -17,7 +16,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(key)
                 .compact();
     }

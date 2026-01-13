@@ -30,12 +30,10 @@ public class AuthController {
         String username = request.get("username");
         String password = request.get("password");
 
-        // 1. Authenticate with Spring Security
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
         );
 
-        // 2. Generate Token
         UserDetails userDetails = userService.loadUserByUsername(username);
         String token = jwtUtil.generateToken(userDetails.getUsername());
 

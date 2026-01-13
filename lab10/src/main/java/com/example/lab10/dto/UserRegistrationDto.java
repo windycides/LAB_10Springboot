@@ -1,6 +1,6 @@
 package com.example.lab10.dto;
 
-import com.example.lab10.validation.MustContainSecure; // Import your custom annotation
+import com.example.lab10.validation.MustContainSecure;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,6 +19,6 @@ public class UserRegistrationDto {
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")
-    @MustContainSecure // <--- Custom validator added here!
+    @MustContainSecure
     private String password;
 }
