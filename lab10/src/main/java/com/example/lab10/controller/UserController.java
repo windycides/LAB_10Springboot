@@ -1,9 +1,9 @@
 package com.example.lab10.controller;
 
-import com.example.lab10.dto.UserRegistrationDto; // Import your DTO
+import com.example.lab10.dto.UserRegistrationDto;
 import com.example.lab10.model.User;
 import com.example.lab10.service.UserService;
-import jakarta.validation.Valid; // Import for validation
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,23 +30,25 @@ public class UserController {
         return "Hello! The application is working.";
     }
 
-    // --- New Endpoint for Lab 10 Part 2 ---
+    // --- New Endpoint for Lab 10 Part 2 & Lab 11 ---
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(
-            // Manually reading a header as requested in the lab [cite: 117, 130]
             @RequestHeader(value = "User-Agent", required = false) String userAgent,
-
-            // validating the input body using the DTO [cite: 134, 119]
             @Valid @RequestBody UserRegistrationDto userDto
     ) {
-        // Log the header to verify we read it
+        // 1. Log the header
         System.out.println("User registering from device: " + userAgent);
 
-        // In a real app, you would save the user here:
-        // userService.saveNewUser(userDto);
+        // 2. Map DTO to User Entity
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword()); // Service will encode this password!
 
-        // Return a successful 200 OK response [cite: 123, 138]
+        // 3. Save to DB using the Service
+        userService.registerUser(user);
+
         return ResponseEntity.ok("User registered successfully!");
     }
 }
