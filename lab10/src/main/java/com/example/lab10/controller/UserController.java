@@ -43,7 +43,7 @@ public class UserController {
 
 
         userService.registerUser(user);
-
+//return ResponseEntity.ok(Map.of("message", "User registered successfully!"));
         return ResponseEntity.ok("User registered successfully!");
     }
 }

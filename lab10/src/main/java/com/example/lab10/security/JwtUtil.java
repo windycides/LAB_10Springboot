@@ -2,15 +2,25 @@ package com.example.lab10.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value; // Import Value
 import org.springframework.stereotype.Component;
+import jakarta.annotation.PostConstruct; // Import PostConstruct
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private static final String SECRET_KEY = "MySuperSecretKeyForLab11MustBeVeryLongAndSecure";
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
+    @Value("${jwt.secret}")
+    private String secretKeyString;
+
+    private SecretKey key;
+
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secretKeyString.getBytes());
+    }
 
     public String generateToken(String username) {
         return Jwts.builder()
