@@ -41,7 +41,7 @@ public class TaskController {
             return ResponseEntity.ok(Map.of("message", "Task deleted successfully"));
 
         } catch (RuntimeException e) {
-            // If it fails (Access Denied), return 403 Forbidden with the error message
+            // If it fails, return 403 Forbidden with the error message
             return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
         }
     }

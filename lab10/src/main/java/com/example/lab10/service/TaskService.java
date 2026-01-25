@@ -47,7 +47,6 @@ public class TaskService {
 
         User user = getUser(username);
 
-        // SECURITY CHECK: Does this task belong to this user?
         if (!task.getUser().getId().equals(user.getId())) {
             throw new RuntimeException("Access Denied: You do not own this task");
         }

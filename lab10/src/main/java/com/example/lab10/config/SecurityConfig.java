@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter; // Import this!
 
 @Configuration
 @EnableWebSecurity
@@ -34,12 +35,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for Postman
+
+                // --- LAB 13 TASK 2: SECURITY HEADERS ---
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.deny()) // Prevents Clickjacking
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'")) // Prevents Script Injection
+                        .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)) // Privacy
+                )
+                // ---------------------------------------
+
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/auth/login").permitAll()
+                        // --- LAB 13 TASK 1: OPEN NEW DOORS ---
+                        .requestMatchers("/register", "/auth/login", "/auth/refresh", "/auth/logout").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

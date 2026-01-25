@@ -12,7 +12,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByUserId(Long userId);
 
-    // REQUIREMENT: Raw SQL with Prepared Statement
+
 
     @Query(value = "SELECT * FROM tasks WHERE user_id = ?1", nativeQuery = true)
     List<Task> findAllTasksByUserIdNative(Long userId);
