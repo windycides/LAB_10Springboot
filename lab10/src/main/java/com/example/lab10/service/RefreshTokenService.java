@@ -14,7 +14,7 @@ import java.util.UUID;
 @Service
 public class RefreshTokenService {
 
-    // Read expiration time from prperties (default 24 hours)
+    // Read expiration time from prperties
     @Value("${jwt.refresh.expiration:86400000}")
     private Long refreshTokenDurationMs;
 
@@ -36,7 +36,7 @@ public class RefreshTokenService {
         // Find user
         refreshToken.setUser(userRepository.findByUsername(username).get());
 
-        // Set expiry (Current time + 24 hours)
+        // Set expiry
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
 
         // Generate random token string

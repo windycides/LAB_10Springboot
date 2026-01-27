@@ -9,7 +9,7 @@ import com.example.lab10.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity; // Added this import!
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth") // Base URL is /auth
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -37,7 +37,6 @@ public class AuthController {
         this.refreshTokenService = refreshTokenService;
         this.userRepository = userRepository;
     }
-
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody Map<String, String> request) {
         String username = request.get("username");
@@ -55,13 +54,10 @@ public class AuthController {
         }
 
         UserDetails userDetails = userService.loadUserByUsername(username);
-
         String accessToken = jwtUtil.generateToken(userDetails.getUsername());
-
         User user = userRepository.findByUsername(username).orElseThrow();
 
         refreshTokenService.deleteByUserId(user.getId());
-
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
 
         return Map.of(
@@ -90,22 +86,18 @@ public class AuthController {
                 })
                 .orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
     }
-
     @PostMapping("/logout")
     public ResponseEntity<Map<String, String>> logout(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
 
-        // Check whether token is send
         if (refreshToken == null || refreshToken.isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("error", "Refresh token is missing"));
         }
 
-        // Check if token in DB if empty expired/deleted.
         if (refreshTokenService.findByToken(refreshToken).isEmpty()) {
             return ResponseEntity.status(400).body(Map.of("error", "Session already expired or invalid token"));
         }
 
-        // Delete token if found
         refreshTokenService.findByToken(refreshToken)
                 .ifPresent(token -> refreshTokenService.deleteByUserId(token.getUser().getId()));
 
